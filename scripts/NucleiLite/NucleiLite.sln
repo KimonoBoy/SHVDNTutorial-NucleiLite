@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33502.453
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NucleiLite", "NucleiLite\NucleiLite.csproj", "{D27CA7F5-7635-402F-BB64-51362B15E334}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D27CA7F5-7635-402F-BB64-51362B15E334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D27CA7F5-7635-402F-BB64-51362B15E334}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D27CA7F5-7635-402F-BB64-51362B15E334}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D27CA7F5-7635-402F-BB64-51362B15E334}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4993F4DC-602B-47BD-938F-77C7F11C4DCE}
+	EndGlobalSection
+EndGlobal
