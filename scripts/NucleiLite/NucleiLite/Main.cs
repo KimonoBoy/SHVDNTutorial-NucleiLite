@@ -1,19 +1,139 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using GTA;
 using GTA.UI;
+using LemonUI;
+using LemonUI.Menus;
 
 namespace NucleiLite
 {
     public class Main : Script
     {
+        ObjectPool menuPool = new ObjectPool();
+        NativeMenu mainMenu = new NativeMenu("NucleiLite", "Main Menu");
+        NativeMenu playerMenu = new NativeMenu("NucleiLite", "Player Menu");
+        NativeMenu vehicleSpawnerMenu = new NativeMenu("NucleiLite", "Vehicle Spawner Menu");
+        NativeMenu weaponsMenu = new NativeMenu("NucleiLite", "Weapons Menu");
+
+        bool CanSuperJump;
+
         public Main()
         {
+            // Main Menu
+            CreateMainMenu();
+
+            // Player Menu
+            CreatePlayerMenu();
+
+            // Vehicle Spawner Menu
+            CreateVehicleSpawnerMenu();
+
+            // Weapons Menu
+            CreateWeaponsMenu();
+
             KeyDown += OnKeyDown;
+            Tick += OnTick;
+        }
+
+        private void CreateMainMenu()
+        {
+            menuPool.Add(mainMenu);
+            mainMenu.AddSubMenu(playerMenu);
+            mainMenu.AddSubMenu(vehicleSpawnerMenu);
+            mainMenu.AddSubMenu(weaponsMenu);
+        }
+
+        private void CreateWeaponsMenu()
+        {
+            menuPool.Add(weaponsMenu);
+            var itemGiveAllWeapons = new NativeItem("Give All Weapons");
+            itemGiveAllWeapons.Activated += (sender, args) =>
+            {
+                foreach (WeaponHash weaponHash in Enum.GetValues(typeof(WeaponHash)))
+                {
+                    Game.Player.Character.Weapons.Give(weaponHash, 10, true, true);
+                    Game.Player.Character.Weapons[weaponHash].Ammo = Game.Player.Character.Weapons[weaponHash].MaxAmmo;
+                    Game.Player.Character.Weapons[weaponHash].AmmoInClip = Game.Player.Character.Weapons[weaponHash].MaxAmmoInClip;
+                }
+            };
+            weaponsMenu.Add(itemGiveAllWeapons);
+        }
+
+        private void CreateVehicleSpawnerMenu()
+        {
+            menuPool.Add(vehicleSpawnerMenu);
+            foreach (VehicleHash vehicleHash in Enum.GetValues(typeof(VehicleHash)))
+            {
+                var itemVehicle = new NativeItem(vehicleHash.ToString());
+                itemVehicle.Activated += (sender, args) => 
+                {
+                    var vehicleModel = new Model(vehicleHash);
+                    vehicleModel.Request();
+
+                    var vehicle = World.CreateVehicle(vehicleModel, Game.Player.Character.Position + Game.Player.Character.ForwardVector * 3.0f, Game.Player.Character.Heading + 90.0f);
+
+                    vehicleModel.MarkAsNoLongerNeeded();
+                };
+                vehicleSpawnerMenu.Add(itemVehicle);
+            }
+        }
+
+        private void CreatePlayerMenu()
+        {
+            menuPool.Add(playerMenu);
+
+            // Fix Player
+            var itemFixPlayer = new NativeItem("Fix Player");
+            itemFixPlayer.Activated += (sender, args) => 
+            {
+                Game.Player.Character.Health = Game.Player.Character.MaxHealth;
+                Game.Player.Character.Armor = Game.Player.MaxArmor;
+            };
+            playerMenu.Add(itemFixPlayer);
+
+            // Invincible
+            var checkBoxInvincible = new NativeCheckboxItem("Invincible");
+            checkBoxInvincible.CheckboxChanged += (sender, args) => 
+            {
+                Game.Player.Character.IsInvincible = !Game.Player.Character.IsInvincible;
+            };
+            playerMenu.Add(checkBoxInvincible);
+
+            // Change Wanted Level
+            var listItemWantedLevel = new NativeListItem<int>("Wanted Level", 0, 1, 2, 3, 4, 5);
+            listItemWantedLevel.ItemChanged += (sender, args) => 
+            {
+                Game.Player.WantedLevel = args.Object;
+            };
+            playerMenu.Add(listItemWantedLevel);
+
+            // Super Jump
+            var checkBoxSuperJump = new NativeCheckboxItem("Super Jump");
+            checkBoxSuperJump.CheckboxChanged += (sender, args) => 
+            { 
+                CanSuperJump = !CanSuperJump;
+            };
+            playerMenu.Add(checkBoxSuperJump);
+        }
+
+        private void OnTick(object sender, EventArgs e)
+        {
+            menuPool.Process();
+
+            if (CanSuperJump)
+            {
+                Game.Player.SetSuperJumpThisFrame();
+            }
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.T) Notification.Show("Hello Compiled Script!");
+            if (e.KeyCode == Keys.F5)
+            {
+                mainMenu.Visible = !mainMenu.Visible;
+                
+            }
         }
+
     }
 }
