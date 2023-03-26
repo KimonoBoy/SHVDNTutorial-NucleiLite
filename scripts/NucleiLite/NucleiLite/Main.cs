@@ -78,21 +78,34 @@ namespace NucleiLite
 
         private void CreateWeaponsMenu()
         {
+            NativeItem itemGiveAllWeapons = new NativeItem("Give All Weapons", "Gives the Player all Weapons.");
+            itemGiveAllWeapons.Activated += (sender, args) =>
+            {
+                Ped character = Game.Player.Character;
+                foreach (WeaponHash weaponHash in Enum.GetValues(typeof(WeaponHash)))
+                {
+                    character.Weapons.Give(weaponHash, 100, false, true);
+                    character.Weapons[weaponHash].Ammo = character.Weapons[weaponHash].MaxAmmo;
+                    character.Weapons[weaponHash].AmmoInClip = character.Weapons[weaponHash].MaxAmmoInClip;
+                }
+                Notification.Show("Player gained all weapons with max ammunition.");
+            };
+            weaponsMenu.Add(itemGiveAllWeapons);
         }
 
         private void CreateVehicleSpawnerMenu()
         {
             foreach(VehicleHash vehicleHash in Enum.GetValues(typeof(VehicleHash)))
             {
-                var itemSpawnVehicle = new NativeItem(vehicleHash.ToString(), $"Spawns a {vehicleHash} right in front of you!");
+                NativeItem itemSpawnVehicle = new NativeItem(vehicleHash.ToString(), $"Spawns a {vehicleHash} right in front of you!");
                 itemSpawnVehicle.Activated += (sender, args) =>
                 {
-                    var character = Game.Player.Character;
+                    Ped character = Game.Player.Character;
 
-                    var vehicleModel = new Model(vehicleHash);
+                    Model vehicleModel = new Model(vehicleHash);
                     vehicleModel.Request();
 
-                    var vehicle = World.CreateVehicle(vehicleModel, character.Position + character.ForwardVector * 3.0f, character.Heading + 90.0f);
+                    Vehicle vehicle = World.CreateVehicle(vehicleModel, character.Position + character.ForwardVector * 3.0f, character.Heading + 90.0f);
 
                     vehicleModel.MarkAsNoLongerNeeded();
 
