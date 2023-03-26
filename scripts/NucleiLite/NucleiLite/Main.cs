@@ -86,7 +86,6 @@ namespace NucleiLite
                 {
                     character.Weapons.Give(weaponHash, 100, false, true);
                     character.Weapons[weaponHash].Ammo = character.Weapons[weaponHash].MaxAmmo;
-                    character.Weapons[weaponHash].AmmoInClip = character.Weapons[weaponHash].MaxAmmoInClip;
                 }
                 Notification.Show("Player gained all weapons with max ammunition.");
             };
