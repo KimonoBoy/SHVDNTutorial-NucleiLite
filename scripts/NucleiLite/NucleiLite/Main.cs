@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using GTA;
 using GTA.UI;
@@ -14,6 +15,8 @@ namespace NucleiLite
         NativeMenu playerMenu = new NativeMenu("NucleiLite", "Player Menu");
         NativeMenu vehicleSpawnerMenu = new NativeMenu("NucleiLite", "Vehicle Spawner Menu");
         NativeMenu weaponsMenu = new NativeMenu("NucleiLite", "Weapons Menu");
+
+        bool canSuperJump = false;
 
         public Main()
         {
@@ -63,6 +66,14 @@ namespace NucleiLite
                 Game.Player.WantedLevel = args.Object;
             };
             playerMenu.Add(listItemWantedLevel);
+
+            // Super Jump
+            NativeCheckboxItem checkBoxSuperJump = new NativeCheckboxItem("Super Jump", "Allows the Player to Jump higher than a building.");
+            checkBoxSuperJump.CheckboxChanged += (sender, args) =>
+            {
+                canSuperJump = checkBoxSuperJump.Checked;
+            };
+            playerMenu.Add(checkBoxSuperJump);
         }
 
         private void CreateWeaponsMenu()
@@ -71,6 +82,24 @@ namespace NucleiLite
 
         private void CreateVehicleSpawnerMenu()
         {
+            foreach(VehicleHash vehicleHash in Enum.GetValues(typeof(VehicleHash)))
+            {
+                var itemSpawnVehicle = new NativeItem(vehicleHash.ToString(), $"Spawns a {vehicleHash} right in front of you!");
+                itemSpawnVehicle.Activated += (sender, args) =>
+                {
+                    var character = Game.Player.Character;
+
+                    var vehicleModel = new Model(vehicleHash);
+                    vehicleModel.Request();
+
+                    var vehicle = World.CreateVehicle(vehicleModel, character.Position + character.ForwardVector * 3.0f, character.Heading + 90.0f);
+
+                    vehicleModel.MarkAsNoLongerNeeded();
+
+                    Notification.Show($"Vehicle: {vehicleHash} has been spawned!");
+                };
+                vehicleSpawnerMenu.Add(itemSpawnVehicle);
+            }
         }
 
         private void AddMenusToPool()
@@ -84,6 +113,11 @@ namespace NucleiLite
         private void OnTick(object sender, EventArgs e)
         {
             menuPool.Process();
+
+            if (canSuperJump)
+            {
+                Game.Player.SetSuperJumpThisFrame();
+            }
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
