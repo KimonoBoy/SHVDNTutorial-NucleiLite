@@ -8,7 +8,8 @@ Have a look at the [Wiki](https://github.com/KimonoBoy/SHVDNTutorial-NucleiLite/
 
 ## Credits
 
-None of this was possible, if it wasn't for the humble and amazing guys below  
+None of this was possible, if it wasn't for the **humble** and **amazing** guys below  
+
 **Alexander Blade** - **ScriptHookV**  
 **Crosire** - **ScriptHookVDotNet** (for us **.NET**-lovers)  
 **Lemon** - **LemonUI** (and **Guad** for the initial **NativeUI**-library that **LemonUI** is based on)    
