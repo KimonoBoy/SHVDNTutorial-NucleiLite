@@ -13,6 +13,7 @@ None of this was possible, if it wasn't for the **humble** and **amazing** guys 
 **Alexander Blade** - **ScriptHookV**  
 **Crosire** - **ScriptHookVDotNet** (for us **.NET**-lovers)  
 **Lemon** - **LemonUI** (and **Guad** for the initial **NativeUI**-library that **LemonUI** is based on)    
+**JohnFromGWN** - For **feedback** and **suggestions**  
 
 ## Next Step
 
